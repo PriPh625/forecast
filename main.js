@@ -32,17 +32,17 @@ L.control.scale({
 
 //MET Norway Vorhersage visualisieren
 async function showForecast(latlng) {
- //   console.log("Popup erzeugen bei:", latlng)
+    //   console.log("Popup erzeugen bei:", latlng)
     let url = `https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${latlng.lat}&lon=${latlng.lng}`;
     //console.log(url);
     let response = await fetch(url);
     let jsondata = await response.json();
-   // console.log(jsondata);
+    // console.log(jsondata);
 
-   // Popup erzeugen
-   let details = jsondata.properties.timeseries[0].data.instant.details;
-   let timestamp = new Date(jsondata.properties.meta.updated_at)
-   let markup = `
+    // Popup erzeugen
+    let details = jsondata.properties.timeseries[0].data.instant.details;
+    let timestamp = new Date(jsondata.properties.meta.updated_at)
+    let markup = `
         <h3>Wettervorhersage für ${timestamp.toLocaleString()}</h3>
         <ul>
         <li>Luftdruck (hpa): ${details.air_pressure_at_sea_level}</li>
@@ -53,18 +53,25 @@ async function showForecast(latlng) {
         <li>Windgeschwindigkeit (km/h): ${details.wind_speed}</li>
     </ul>
     `;
+    // wettericons für die nächsten 24 Stunden in 3 Stunden Schritten
+    for (let i=0; i <=24; i+=3) {
+        let symbol = jsondata.properties.timeseries[i].data.next_1_hours.summary.symbol_code;
+        console.log(symbol);
 
-   L.popup([
+        markup +=`<img src="icons/${symbol}.svg" style="width:32px">`;
+    }
+
+    L.popup([
         latlng.lat, latlng.lng
-   ], {
-    content: markup
-   }).openOn(overlays.forecast);
+    ], {
+        content: markup
+    }).openOn(overlays.forecast);
 }
 
 // auf Kartenklick reagieren
-map.on("click",function(evt) {
-   // console.log(evt.latlng);
-    showForecast(evt.latlng); 
+map.on("click", function (evt) {
+    // console.log(evt.latlng);
+    showForecast(evt.latlng);
 })
 
 // Klick auf Innsbruck simulieren
