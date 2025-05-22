@@ -39,6 +39,7 @@ async function getPlaceName(url) {
     return jsondata.display_name;
 }
 
+
 //MET Norway Vorhersage visualisieren
 async function showForecast(latlng) {
     //   console.log("Popup erzeugen bei:", latlng)
@@ -109,6 +110,7 @@ fetch('https://geographie.uibk.ac.at/data/ecmwf/data/wind-10u-10v-europe.json')
         const velocityLayer = L.velocityLayer({
             data: data,
             displayValues: true,
+            lineWidth: 2,
             displayOptions: {
                 velocityType: "Global Wind",
                 position: "bottomleft",
